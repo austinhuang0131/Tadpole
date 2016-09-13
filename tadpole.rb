@@ -5,7 +5,6 @@ require 'securerandom'
 getatoken = "PUT YOUR TOKEN HERE"
 getanapp = 224662505157427200 # REPLACE WITH YOUR APPLICATION ID
 bot = Discordrb::Commands::CommandBot.new(token: getatoken, application_id: getanapp, prefix: ['tadpole '])
-
 #  ad88888ba  88888888888 888888888888 888888888888 88 888b      88   ,ad8888ba,   ad88888ba 
 # d8"     "8b 88               88           88      88 8888b     88  d8"'    `"8b d8"     "8b
 # Y8,         88               88           88      88 88 `8b    88 d8'           Y8,        
@@ -18,38 +17,23 @@ bot = Discordrb::Commands::CommandBot.new(token: getatoken, application_id: geta
 # When turned on, any bot account's messages will be sent throught Tadpole.
 @parsebots = false
 
+# The maximum of allowed connections through Tadpole.
+@conlimit = 5
+
+# When turned on, all attachments URLs through Tadpole.
+@allowattach = true
+
 module Join
   extend Discordrb::EventContainer
 
   server_create do |event|
+  event.bot.send_message(167106306895773697,":email: OAuth joining #{event.server.name} (#{event.server.id})")
   event.bot.send_message(event.server.id,"Hello! I am Tadpole!
 I can help connect your channel to any other channel that has me!
-I am originally made by Snazzah, but he abandoned me and now austinhuang picked me up!
-If you have any other questions and need support, join Snazzah’s Discord server: https://discord.gg/0vjTDaDsgOQWUtlv
-To start, type `tadpole help` in chat.
+If you have any other questions and need support, join this discord server: https://discord.gg/0vjTDaDsgOQWUtlv
+To start, type `#tadpole help` in chat.
 
 *Thanks!*")
-  end
-end
-
-module WArn
-  extend Discordrb::EventContainer
-
-  pm do |event, *args|
-  see = true
-  tp = JSON.parse(open('data/tadpole').read)
-  tp.each do |con2|
-		con = con2[1]
-		if con.include?(event.channel.id.to_s)
-		see = false
-	    end
-  end
-  if see
-  if event.message.content.starts_with?('tadpole') or event.message.content.starts_with?('<@179161501444079616>') or event.message.content.starts_with?('Tadpole')
-  else
-  event.user.pm(":weary: This is a **bot account**. Please invite using link: #{event.bot.invite_url}" + "&permissions=18432")
-  end
-  end
   end
 end
 module Tadpole
@@ -68,16 +52,16 @@ module Tadpole
 								if event.author.bot_account
 									if @parsebots
 										if not event.channel.private?
-											msg = HTMLEntities.new.decode("&#x1F4E1;")+" *##{event.channel.name}`BOT`* **#{event.author.name}:** #{event.message.content}"
+											msg = HTMLEntities.new.decode("&#x1F4E1;")+" *##{event.channel.name} `BOT`* **#{event.author.name}:** #{event.message.content}"
 										else
-											msg = HTMLEntities.new.decode("&#x1F4E1;")+" **#{event.author.name}`BOT`:** #{event.message.content}"
+											msg = HTMLEntities.new.decode("&#x1F4E1;")+" **#{event.author.name} `BOT`:** #{event.message.content}"
 										end
-										if event.message.attachments.count > 0 #and bot.bot_user.on(chn.server).permission?(:embed_links, chn)
+										if event.message.attachments.count > 0 && @allowattach #and bot.bot_user.on(chn.server).permission?(:embed_links, chn)
 										att = []
 											event.message.attachments.each {|a| att.insert(0, a.url)}
 											msg += " "+HTMLEntities.new.decode("&#x1F5BC;")+"**:** "+att.join(" ")
 										end
-										if msg.length > 2000
+										if msg.length > 1950
 											event.author.mention+", Your last message could not be sent because it hit the character limit!"
 										else
 											chn.send_message(msg)
@@ -114,9 +98,7 @@ module Tadpole
 end
 
 bot.include! Tadpole
-bot.include! WArn
 bot.include! Join
-bot.include! Kicked
 
 tp = JSON.parse(open('data/tadpole').read)
 tpc = JSON.parse(open('data/tadpolecs').read)
@@ -145,8 +127,8 @@ bot.command :host do |event, *args|
 	if not args[0].to_i < 2
 		ways = args[0]
 	end
-	if ways > 5
-		ways = 5
+	if ways > @conlimit
+		ways = @conlimit
 	end
 	tp.each do |con2|
 		con = con2[1]
@@ -158,7 +140,7 @@ bot.command :host do |event, *args|
 		HTMLEntities.new.decode("&#x1F6F0;&#x1F6AB;")+" You already have a connection!"
 	else
 		if not tp.has_key?(key) == nil
-			event.channel.send_message(HTMLEntities.new.decode("&#x1F6F0;")+" Started! **Tadpole ID: `"+key+"`**")
+			HTMLEntities.new.decode("&#x1F6F0;")+" Started a #{ways}-way connection! **Tadpole ID:** **`"+key+"`**"
 			tp[key] = [].insert(0, event.channel.id.to_s)
 			tpc[key] = ways
 			holderval = IO.write("data/tadpole",tp.to_json)
@@ -199,7 +181,7 @@ bot.command :end do |event, *args|
 			elsif con.count == 2
 				chn = event.bot.channel(con.reverse[con.index(event.channel.id.to_s)].to_i)
 				red = false
-				#event.channel.send_message("Disconnecting... If there is no response after this type `tadpole end force`")
+				#event.channel.send_message("Disconnecting... If there is no response after this type `#tadpole end force`")
 				if not chn == nil	
 					if event.channel.private?
 						chn.send_message(HTMLEntities.new.decode("&#x1F4DE;")+" *#{event.author.name} Disconnected.* `Connection has ended.`")
@@ -214,7 +196,7 @@ bot.command :end do |event, *args|
 				holderval = IO.write("data/tadpolecs",tpc.to_json)
 			else
 				red = false
-				#event.channel.send_message("Disconnecting... If there is no response after this type `tadpole end force`")
+				#event.channel.send_message("Disconnecting... If there is no response after this type `#tadpole end force`")
 				ccon = con
 				con.each do |chn|
 					chn2 = event.bot.channel(chn)
@@ -343,7 +325,7 @@ end
 
 bot.command :help do |event|
   event << "I sent you a list, #{event.user.mention} !"
-  event.user.pm("Prefixes: `tadpole`
+  event.user.pm("Prefixes: `@Tadpole` `Tadpole` `#tadpole`
 __**Available Commands**__
 **ping** *~ AKA pong*
 
@@ -371,3 +353,4 @@ bot.run :async
 bot.game=("with connections")
 #bot.send_message(167106306895773697,":desktop: Rebooted!")
 bot.sync
+=begin

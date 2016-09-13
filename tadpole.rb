@@ -26,7 +26,7 @@ module Join
 I can help connect your channel to any other channel that has me!
 I am originally made by Snazzah, but he abandoned me and now austinhuang picked me up!
 If you have any other questions and need support, join Snazzah’s Discord server: https://discord.gg/0vjTDaDsgOQWUtlv
-To start, type `#tadpole help` in chat.
+To start, type `tadpole help` in chat.
 
 *Thanks!*")
   end
@@ -45,7 +45,7 @@ module WArn
 	    end
   end
   if see
-  if event.message.content.starts_with?('#tadpole') or event.message.content.starts_with?('<@179161501444079616>') or event.message.content.starts_with?('Tadpole')
+  if event.message.content.starts_with?('tadpole') or event.message.content.starts_with?('<@179161501444079616>') or event.message.content.starts_with?('Tadpole')
   else
   event.user.pm(":weary: This is a **bot account**. Please invite using link: #{event.bot.invite_url}" + "&permissions=18432")
   end
@@ -199,7 +199,7 @@ bot.command :end do |event, *args|
 			elsif con.count == 2
 				chn = event.bot.channel(con.reverse[con.index(event.channel.id.to_s)].to_i)
 				red = false
-				#event.channel.send_message("Disconnecting... If there is no response after this type `#tadpole end force`")
+				#event.channel.send_message("Disconnecting... If there is no response after this type `tadpole end force`")
 				if not chn == nil	
 					if event.channel.private?
 						chn.send_message(HTMLEntities.new.decode("&#x1F4DE;")+" *#{event.author.name} Disconnected.* `Connection has ended.`")
@@ -214,7 +214,7 @@ bot.command :end do |event, *args|
 				holderval = IO.write("data/tadpolecs",tpc.to_json)
 			else
 				red = false
-				#event.channel.send_message("Disconnecting... If there is no response after this type `#tadpole end force`")
+				#event.channel.send_message("Disconnecting... If there is no response after this type `tadpole end force`")
 				ccon = con
 				con.each do |chn|
 					chn2 = event.bot.channel(chn)
@@ -343,7 +343,7 @@ end
 
 bot.command :help do |event|
   event << "I sent you a list, #{event.user.mention} !"
-  event.user.pm("Prefixes: `#tadpole`
+  event.user.pm("Prefixes: `tadpole`
 __**Available Commands**__
 **ping** *~ AKA pong*
 

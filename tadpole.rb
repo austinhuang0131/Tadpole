@@ -2,8 +2,9 @@ require 'discordrb'
 require 'json'
 require 'htmlentities'
 require 'securerandom'
-token, app_id = File.read('tadpole-auth').lines
-bot = Discordrb::Commands::CommandBot.new(token: token, application_id: app_id.to_i, prefix: ['#tadpole ','Tadpole ','<@179161501444079616> ','<@!179161501444079616> '])
+getatoken = "PUT YOUR TOKEN HERE"
+getanapp = 224662505157427200 # REPLACE WITH YOUR APPLICATION ID
+bot = Discordrb::Commands::CommandBot.new(token: getatoken, application_id: getanapp, prefix: ['tadpole '])
 
 #  ad88888ba  88888888888 888888888888 888888888888 88 888b      88   ,ad8888ba,   ad88888ba 
 # d8"     "8b 88               88           88      88 8888b     88  d8"'    `"8b d8"     "8b
@@ -21,22 +22,16 @@ module Join
   extend Discordrb::EventContainer
 
   server_create do |event|
-  event.bot.send_message(167106306895773697,":email: OAuth joining #{event.server.name} (#{event.server.id})")
   event.bot.send_message(event.server.id,"Hello! I am Tadpole!
 I can help connect your channel to any other channel that has me!
-If you have any other questions and need support, join this discord server: https://discord.gg/0vjTDaDsgOQWUtlv
+I am originally made by Snazzah, but he abandoned me and now austinhuang picked me up!
+If you have any other questions and need support, join Snazzah’s Discord server: https://discord.gg/0vjTDaDsgOQWUtlv
 To start, type `#tadpole help` in chat.
 
 *Thanks!*")
   end
 end
-module Kicked
-  extend Discordrb::EventContainer
 
-  server_delete do |event|
-  event.bot.send_message(167106306895773697,":boot: Kicked from #{event.server.name} (#{event.server.id})")
-  end
-end
 module WArn
   extend Discordrb::EventContainer
 
@@ -163,7 +158,7 @@ bot.command :host do |event, *args|
 		HTMLEntities.new.decode("&#x1F6F0;&#x1F6AB;")+" You already have a connection!"
 	else
 		if not tp.has_key?(key) == nil
-			HTMLEntities.new.decode("&#x1F6F0;")+" Started a #{ways}-way connection! **Tadpole ID:** **`"+key+"`**"
+			event.channel.send_message(HTMLEntities.new.decode("&#x1F6F0;")+" Started! **Tadpole ID: `"+key+"`**")
 			tp[key] = [].insert(0, event.channel.id.to_s)
 			tpc[key] = ways
 			holderval = IO.write("data/tadpole",tp.to_json)
@@ -348,7 +343,7 @@ end
 
 bot.command :help do |event|
   event << "I sent you a list, #{event.user.mention} !"
-  event.user.pm("Prefixes: `@Tadpole` `Tadpole` `#tadpole`
+  event.user.pm("Prefixes: `#tadpole`
 __**Available Commands**__
 **ping** *~ AKA pong*
 
@@ -376,4 +371,3 @@ bot.run :async
 bot.game=("with connections")
 #bot.send_message(167106306895773697,":desktop: Rebooted!")
 bot.sync
-=begin

@@ -4,7 +4,8 @@ require 'htmlentities'
 require 'securerandom'
 getatoken = "PUT YOUR TOKEN HERE"
 getanapp = 224662505157427200 # REPLACE WITH YOUR APPLICATION ID
-bot = Discordrb::Commands::CommandBot.new(token: getatoken, application_id: getanapp, prefix: ['tadpole '])
+bot = Discordrb::Commands::CommandBot.new(token: getatoken, application_id: getanapp, prefix: ['tadpole ', '<@224662505157427200>'])
+
 #  ad88888ba  88888888888 888888888888 888888888888 88 888b      88   ,ad8888ba,   ad88888ba 
 # d8"     "8b 88               88           88      88 8888b     88  d8"'    `"8b d8"     "8b
 # Y8,         88               88           88      88 88 `8b    88 d8'           Y8,        
@@ -31,7 +32,7 @@ module Join
   event.bot.send_message(event.server.id,"Hello! I am Tadpole!
 I can help connect your channel to any other channel that has me!
 If you have any other questions and need support, join this discord server: https://discord.gg/0vjTDaDsgOQWUtlv
-To start, type `#tadpole help` in chat.
+To start, type `tadpole help` in chat.
 
 *Thanks!*")
   end
@@ -123,7 +124,7 @@ bot.command :host do |event, *args|
 	if norole or event.user.id == 158049329150427136 or event.server.owner.id == event.user.id
 	key = SecureRandom.uuid
 	red = false
-	ways = 2
+	ways = 5
 	if not args[0].to_i < 2
 		ways = args[0]
 	end
@@ -140,7 +141,7 @@ bot.command :host do |event, *args|
 		HTMLEntities.new.decode("&#x1F6F0;&#x1F6AB;")+" You already have a connection!"
 	else
 		if not tp.has_key?(key) == nil
-			HTMLEntities.new.decode("&#x1F6F0;")+" Started a #{ways}-way connection! **Tadpole ID:** **`"+key+"`**"
+			event.channel.send_message(HTMLEntities.new.decode("&#x1F6F0;")+" Started a #{ways}-way connection! **Tadpole ID:** **`"+key+"`**")
 			tp[key] = [].insert(0, event.channel.id.to_s)
 			tpc[key] = ways
 			holderval = IO.write("data/tadpole",tp.to_json)
@@ -181,7 +182,7 @@ bot.command :end do |event, *args|
 			elsif con.count == 2
 				chn = event.bot.channel(con.reverse[con.index(event.channel.id.to_s)].to_i)
 				red = false
-				#event.channel.send_message("Disconnecting... If there is no response after this type `#tadpole end force`")
+				#event.channel.send_message("Disconnecting... If there is no response after this type `tadpole end force`")
 				if not chn == nil	
 					if event.channel.private?
 						chn.send_message(HTMLEntities.new.decode("&#x1F4DE;")+" *#{event.author.name} Disconnected.* `Connection has ended.`")
@@ -196,7 +197,7 @@ bot.command :end do |event, *args|
 				holderval = IO.write("data/tadpolecs",tpc.to_json)
 			else
 				red = false
-				#event.channel.send_message("Disconnecting... If there is no response after this type `#tadpole end force`")
+				#event.channel.send_message("Disconnecting... If there is no response after this type `tadpole end force`")
 				ccon = con
 				con.each do |chn|
 					chn2 = event.bot.channel(chn)
@@ -325,7 +326,7 @@ end
 
 bot.command :help do |event|
   event << "I sent you a list, #{event.user.mention} !"
-  event.user.pm("Prefixes: `@Tadpole` `Tadpole` `#tadpole`
+  event.user.pm("Prefixes: `tadpole` `@Tadpole`
 __**Available Commands**__
 **ping** *~ AKA pong*
 
@@ -353,4 +354,3 @@ bot.run :async
 bot.game=("with connections")
 #bot.send_message(167106306895773697,":desktop: Rebooted!")
 bot.sync
-=begin

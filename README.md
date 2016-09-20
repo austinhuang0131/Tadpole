@@ -14,7 +14,6 @@ You should have Ruby 2.3 or later. If not, get one.
 **2** Execute them in your terminal:
 ```
 $ gem install discordrb
-$ gem install json
 $ gem install htmlentities
 ```
 

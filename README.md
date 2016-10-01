@@ -1,7 +1,7 @@
 # Tadpole Revived
 * You are only allowed to use it privately.
   * That means, you must disable `Public Bot` option in your application page.
-* You should contact [Snazzah](https://discord.gg/0vjTDaDsgOQWUtlv) for bugs, not me. He owns most of the code. I did some really minor changes (Disabling >2 way connection and changed prefix).
+* You should contact [Snazzah](https://discord.gg/0vjTDaDsgOQWUtlv) for bugs, not me. He owns most of the code. I did some really minor changes (Disabling <5 way connection and changed prefix).
 * You should NOT change any of the code except the token and app ID part. 
 * Apache License 2.0
 
